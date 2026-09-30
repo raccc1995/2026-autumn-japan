@@ -198,7 +198,7 @@
 
                     <!-- Itinerary Cards Timeline -->
                     <div class="space-y-3 mt-2">
-                        <!-- First Day Hotel / Flight Connector -->
+                        <!-- First Day Hotel Connector -->
                         <div v-if="getPrevHotelName(selectedDayIndex)" class="my-2 flex items-center justify-center">
                             <div class="bg-oat-soft/80 text-chestnut-800 border border-oat-border rounded-xl px-3 py-1.5 flex items-center space-x-2 text-[11px] shadow-sm">
                                 <i class="fa-solid fa-hotel text-ginkgo-600"></i>
@@ -221,7 +221,7 @@
                                     </template>
                                     <template v-else>
                                         <i :class="getTransportIcon(item.transportMode)" class="text-ginkgo-600 text-xs"></i>
-                                        <span class="font-bold">約 {{ item.travelTime || '20' }} 分鐘</span>
+                                        <span class="font-bold">約 {{ formatItemTravelTime(item.travelTime) }}</span>
                                         <button @click="cycleTransportMode(item)" title="切換交通方式" class="text-chestnut-400 hover:text-ginkgo-600 ml-1">
                                             <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
                                         </button>
@@ -233,7 +233,7 @@
                             <div v-if="item.category === '航班'" class="bg-gradient-to-br from-chestnut-800 via-chestnut-700 to-ginkgo-800 text-white rounded-2xl p-4 shadow-md relative overflow-hidden border border-chestnut-700 space-y-2">
                                 <div class="flex justify-between items-center pb-2 border-b border-white/20">
                                     <span class="bg-ginkgo-300 text-chestnut-900 text-[10px] px-2.5 py-0.5 rounded-full font-black">國泰航空 {{ item.flightNo || 'CX536' }}</span>
-                                    <span class="text-[11px] text-ginkgo-100 font-medium"><i class="fa-regular fa-clock me-1"></i>{{ item.time }}</span>
+                                    <span class="text-[11px] text-ginkgo-100 font-medium"><i class="fa-regular fa-clock me-1"></i>{{ item.hours || item.time }}</span>
                                 </div>
                                 <div class="flex items-center justify-between my-2 px-2">
                                     <div class="text-center">
@@ -285,7 +285,7 @@
 
                                 <h3 class="text-sm font-black text-chestnut-800">{{ item.title }}</h3>
 
-                                <div class="space-y-1 text-xs text-chestnut-700">
+                                <div class="space-y-1.5 text-xs text-chestnut-700">
                                     <a v-if="item.address" 
                                        :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(item.title + ' ' + item.address)" 
                                        target="_blank" 
@@ -293,9 +293,21 @@
                                         <i class="fa-solid fa-location-dot w-4 text-ginkgo-600 mt-0.5 shrink-0"></i>
                                         <span class="underline underline-offset-2 decoration-ginkgo-300 group-hover:decoration-ginkgo-600">{{ item.address }}</span>
                                     </a>
-                                    <p v-if="item.ticket" class="flex items-center text-chestnut-600">
-                                        <i class="fa-solid fa-ticket w-4 text-ginkgo-600"></i> 門票：{{ item.ticket }}
+
+                                    <p v-if="item.travelTime" class="flex items-center text-chestnut-600 font-medium">
+                                        <i class="fa-solid fa-route w-4 text-ginkgo-600 shrink-0"></i>
+                                        <span>交通車程：<strong class="text-chestnut-800 font-bold">{{ formatItemTravelTime(item.travelTime) }}</strong></span>
                                     </p>
+
+                                    <a v-if="item.linkUrl" 
+                                       :href="item.linkUrl" 
+                                       target="_blank" 
+                                       class="flex items-center text-ginkgo-700 hover:text-ginkgo-900 font-semibold group py-0.5">
+                                        <i class="fa-solid fa-link w-4 text-ginkgo-600 shrink-0"></i>
+                                        <span class="underline underline-offset-2 decoration-ginkgo-300 group-hover:decoration-ginkgo-600 truncate flex-1">{{ item.linkUrl }}</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ms-1 text-ginkgo-500"></i>
+                                    </a>
+
                                     <p v-if="item.notes" class="flex items-start text-chestnut-600">
                                         <i class="fa-regular fa-comment-dots w-4 text-ginkgo-600 mt-0.5 shrink-0"></i>
                                         <span class="flex-1 break-all">{{ item.notes }}</span>
@@ -615,43 +627,53 @@
                         <label class="block text-chestnut-600 font-bold mb-1">地址 (開啟地圖定位)</label>
                         <input type="text" v-model="modalForm.address" placeholder="地點或詳細地址" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-chestnut-600 font-bold mb-1">時間</label>
-                            <input type="text" v-model="modalForm.hours" placeholder="例: 09:00 - 17:00" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
-                        </div>
-                        <div>
-                            <label class="block text-chestnut-600 font-bold mb-1">交通車程 (分鐘)</label>
-                            <input type="number" v-model="modalForm.travelTime" placeholder="20" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
-                        </div>
+                    <div>
+                        <label class="block text-chestnut-600 font-bold mb-1">時間</label>
+                        <input type="text" v-model="modalForm.hours" placeholder="例：09:00 - 17:00" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
                     </div>
                     <div>
-                        <label class="block text-chestnut-600 font-bold mb-1">特色 & 備註</label>
-                        <textarea v-model="modalForm.notes" rows="2" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400"></textarea>
+                        <label class="block text-chestnut-600 font-bold mb-1">預估交通車程 (分鐘)</label>
+                        <input type="number" v-model.number="modalForm.travelTime" placeholder="例如: 45" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                    </div>
+                    <div>
+                        <label class="block text-chestnut-600 font-bold mb-1">相關網址 / 網站連結</label>
+                        <input type="url" v-model="modalForm.linkUrl" placeholder="https://..." class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                    </div>
+                    <div>
+                        <label class="block text-chestnut-600 font-bold mb-1">備註</label>
+                        <textarea v-model="modalForm.notes" rows="2" placeholder="特色、注意事項或備註說明" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400"></textarea>
                     </div>
                 </div>
 
-                <!-- Expense Form -->
+                <!-- Expenses Form -->
                 <div v-if="currentTab === 'expenses'" class="space-y-2.5 text-xs">
                     <div>
-                        <label class="block text-chestnut-600 font-bold mb-1">項目名稱</label>
-                        <input type="text" v-model="modalExpenseForm.name" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                        <label class="block text-chestnut-600 font-bold mb-1">消費名稱</label>
+                        <input type="text" v-model="modalExpenseForm.name" placeholder="例如: 鰻魚飯" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-chestnut-600 font-bold mb-1">總金額 (JPY ¥)</label>
-                            <input type="number" v-model.number="modalExpenseForm.amount" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                            <label class="block text-chestnut-600 font-bold mb-1">金額 (JPY ¥)</label>
+                            <input type="number" v-model.number="modalExpenseForm.amount" placeholder="0" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                        </div>
+                        <div>
+                            <label class="block text-chestnut-600 font-bold mb-1">付款人</label>
+                            <select v-model="modalExpenseForm.paidBy" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                                <option>Rachel</option><option>Mo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-chestnut-600 font-bold mb-1">類別</label>
+                            <select v-model="modalExpenseForm.category" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
+                                <option>餐飲</option><option>交通</option><option>住宿</option><option>門票</option><option>購物</option><option>其他</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-chestnut-600 font-bold mb-1">日期</label>
                             <input type="date" v-model="modalExpenseForm.date" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-chestnut-600 font-bold mb-1">付款人</label>
-                        <select v-model="modalExpenseForm.paidBy" class="w-full bg-oat-soft/50 rounded-xl p-2 border border-oat-border focus:outline-none focus:border-ginkgo-400">
-                            <option>Rachel</option><option>Mo</option>
-                        </select>
                     </div>
                 </div>
 
@@ -668,6 +690,7 @@
 
     </div>
 
+    <!-- Vue App Logic -->
     <script>
         const { createApp, ref, computed, onMounted, watch } = Vue;
 
@@ -675,7 +698,7 @@
             {
                 weekday: 'Wed', date: '11/04', city: '名古屋',
                 items: [
-                    { id: 101, category: '航班', flightNo: 'CX536', time: '10:15 - 15:00', depCode: 'HKG', depTime: '10:15', arrCode: 'NGO', arrTime: '15:00', flightDuration: '3h 45m', notes: '香港國際機場 ➔ 中部國際機場' },
+                    { id: 101, category: '航班', flightNo: 'CX536', time: '10:15 - 15:00', hours: '10:15 - 15:00', depCode: 'HKG', depTime: '10:15', arrCode: 'NGO', arrTime: '15:00', flightDuration: '3h 45m', notes: '香港國際機場 ➔ 中部國際機場' },
                     { id: 102, category: '交通', title: '中部國際機場至名古屋站 (名鐵特急)', hours: '16:00 - 17:00', address: '中部國際機場站', ticket: '¥1,250', notes: '搭乘名鐵特急前往名古屋車站', transportMode: 'train', travelTime: '40' },
                     { id: 103, category: '住宿', title: 'APA Hotel Nagoya Ekimae Kita (アパホテル 名古屋駅前北)', hours: '17:00 - 18:00', address: '愛知縣名古屋市中村區則武1-2-4', notes: '飯店辦理 Check-in 入住手續', transportMode: 'walk', travelTime: '10' },
                     { id: 104, category: '美食', title: '世界の山ちゃん 則武店', hours: '18:00 - 19:30', address: '愛知県名古屋市中村区則武1-2-3', notes: '開放時間 17:00 - 23:15，招牌名古屋手羽先（炸雞翅）晚餐', transportMode: 'walk', travelTime: '10' }
@@ -687,47 +710,54 @@
                     { id: 201, category: '美食', title: '在酒店食早餐', hours: '08:00 - 09:00', notes: 'APA Hotel 飯店享用早餐', transportMode: 'walk', travelTime: '0' },
                     { id: 202, category: '交通', title: '前往租車公司取車', address: 'ニッポンレンタカー 名古屋駅新幹線口 営業所', hours: '09:00 - 10:00', notes: '11/05 取車, 11/09 19:00 前還車', transportMode: 'walk', travelTime: '15' },
                     { id: 203, category: '交通', title: '自駕前往白川鄉', address: '村營SESERAGI公園停車場', hours: '10:00 - 12:00', notes: '導航至村營SESERAGI公園停車場，預計車程約 2 小時 10 分鐘', transportMode: 'car', travelTime: '130' },
-                    { id: 204, category: '美食', title: '白川郷食事処 いろり', address: '岐阜県大野郡白川村荻町374-1', hours: '12:00 - 13:30', notes: '營業時間 10:00 - 14:00 (Tabelog 高評價鄉土料理: https://tabelog.com/gifu/A2104/A210404/21003222/)', transportMode: 'walk', travelTime: '10' },
+                    { id: 204, category: '美食', title: '白川郷食事処 いろり', address: '岐阜県大野郡白川村荻町374-1', hours: '12:00 - 13:30', linkUrl: 'https://tabelog.com/gifu/A2104/A210404/21003222/', notes: '營業時間 10:00 - 14:00 (Tabelog 高評價鄉土料理)', transportMode: 'walk', travelTime: '10' },
                     { id: 205, category: '景點', title: '荻町城跡展望台 & 城山天守閣展望台', address: '岐阜県大野郡白川村荻町', hours: '13:30 - 15:00', notes: '營業時間 09:30 - 15:30。步行約 15 分鐘俯瞰合掌村全景，城山展望台只要購買食物即可入座欣賞白川鄉全景', transportMode: 'walk', travelTime: '15' },
                     { id: 206, category: '景點', title: '合掌村散步 & 白川鄉布丁的家', address: '岐阜県大野郡白川村荻町702', hours: '15:00 - 17:00', notes: '白川郷ぷりんの家 營業時間 10:00 - 16:30，合掌村內極具人氣的甜點專賣店，夢幻視覺招牌：「水布丁（水ぷりん）」', transportMode: 'walk', travelTime: '10' },
                     { id: 207, category: '景點', title: '相逢橋', address: '岐阜県大野郡白川村荻町', hours: '17:00 - 17:30', notes: '吊橋橫跨在河床寬廣的庄川上，可從橋上觀賞宜人的河川景色。過橋時能感受到庄川清澈見底的流水舒暢感', transportMode: 'walk', travelTime: '5' },
                     { id: 208, category: '住宿', title: '前往富山入住 Hotel Enoe Toyama', address: '富山縣富山市寶町1-4-1', hours: '17:30 - 19:00', notes: '預計自駕車程約 1 小時 30 分鐘，辦理 Check-in 入住', transportMode: 'car', travelTime: '90' },
-                    { id: 209, category: '美食', title: '廻転とやま鮨 富山站前店', address: '富山県富山市桜町1-4-9', hours: '19:00', notes: '富山灣新鮮直送迴轉壽司晚餐 (Tabelog: https://tabelog.com/toyama/A1601/A160101/16007185/)', transportMode: 'walk', travelTime: '10' }
+                    { id: 209, category: '美食', title: '廻転とやま鮨 富山站前店', address: '富山県富山市桜町1-4-9', hours: '19:00', linkUrl: 'https://tabelog.com/toyama/A1601/A160101/16007185/', notes: '富山灣新鮮直送迴轉壽司晚餐', transportMode: 'walk', travelTime: '10' }
                 ]
             },
             {
                 weekday: 'Fri', date: '11/06', city: '富山',
                 items: [
-                    { id: 301, category: '景點', title: '黑部峽谷觀光小火車', address: '富山縣黒部市宇奈月溫泉', time: '10:00', ticket: '來回 ¥3,960', notes: '賞黑部峽谷秋楓', transportMode: 'car', travelTime: '40' },
-                    { id: 302, category: '美食', title: '富山環水公園 Starbucks', address: '富山縣富山市湊入船町1', time: '15:30', notes: '全球最美星巴克之一', transportMode: 'walk', travelTime: '15' }
+                    { id: 301, category: '景點', title: '黑部峽谷觀光小火車', address: '富山縣黒部市宇奈月溫泉', hours: '10:00', notes: '賞黑部峽谷秋楓', transportMode: 'car', travelTime: '40' },
+                    { id: 302, category: '美食', title: '富山環水公園 Starbucks', address: '富山縣富山市湊入船町1', hours: '15:30', notes: '全球最美星巴克之一', transportMode: 'walk', travelTime: '15' }
                 ]
             },
             {
                 weekday: 'Sat', date: '11/07', city: '富山',
                 items: [
-                    { id: 401, category: '景點', title: '雨晴海岸', address: '富山縣高岡市太田雨晴', time: '11:00', notes: '遠眺立山連峰絕景', transportMode: 'car', travelTime: '40' },
-                    { id: 402, category: '景點', title: '莊川峽遊覽船', address: '富山縣礪波市莊川町', time: '14:30', notes: '搭乘遊覽船賞峽谷楓葉', transportMode: 'car', travelTime: '45' }
+                    { id: 401, category: '景點', title: '雨晴海岸', address: '富山縣高岡市太田雨晴', hours: '11:00', notes: '遠眺立山連峰絕景', transportMode: 'car', travelTime: '40' },
+                    { id: 402, category: '景點', title: '莊川峽遊覽船', address: '富山縣礪波市莊川町', hours: '14:30', notes: '搭乘遊覽船賞峽谷楓葉', transportMode: 'car', travelTime: '45' }
                 ]
             },
             {
                 weekday: 'Sun', date: '11/08', city: '上高地 / 松本',
                 items: [
-                    { id: 501, category: '景點', title: '上高地 (河童橋 / 大正池)', address: '長野縣松本市安曇上高地', time: '09:00', notes: '神降臨的山嶽秘境秋季健行', transportMode: 'car', travelTime: '90' },
-                    { id: 502, category: '住宿', title: '東橫INN松本站前本町', address: '長野縣松本市中央2-1-23', time: '17:00', notes: '松本市區飯店入住', transportMode: 'walk', travelTime: '10' }
+                    { id: 501, category: '景點', title: '上高地 (河童橋 / 大正池)', address: '長野縣松本市安曇上高地', hours: '09:00', notes: '神降臨的山嶽秘境秋季健行', transportMode: 'car', travelTime: '90' },
+                    { id: 502, category: '住宿', title: '東橫INN松本站前本町', address: '長野縣松本市中央2-1-23', hours: '17:00', notes: '松本市區飯店入住', transportMode: 'walk', travelTime: '10' }
                 ]
             },
             {
                 weekday: 'Mon', date: '11/09', city: '諏訪湖 / 名古屋',
                 items: [
-                    { id: 601, category: '景點', title: '諏訪湖立石公園', address: '長野縣諏訪市上諏訪', time: '10:00', notes: '動畫《你的名字》聖地取景視野', transportMode: 'car', travelTime: '45' },
-                    { id: 602, category: '住宿', title: 'Prince Smart Inn Nagoya Sakae', address: '愛知縣名古屋市中區錦3-21-21', time: '17:30', notes: '榮區飯店入住', transportMode: 'car', travelTime: '15' }
+                    { id: 601, category: '美食', title: '在酒店食早餐', hours: '09:00 - 10:00', notes: '東橫INN松本站前本町享用早餐', transportMode: 'walk', travelTime: '0' },
+                    { id: 602, category: '交通', title: '前往立石公園', address: '立石公園 駐車場', hours: '10:00 - 10:45', notes: '預計車程 45 分鐘，導航定位至立石公園 駐車場', transportMode: 'car', travelTime: '45' },
+                    { id: 603, category: '景點', title: '在展望テラス俯瞰諏訪湖全景', address: '長野縣諏訪市上諏訪立石公園', hours: '10:45 - 11:30', notes: '動畫《你的名字》聖地取景視野，俯瞰諏訪湖壯麗全景', transportMode: 'walk', travelTime: '5' },
+                    { id: 604, category: '美食', title: 'イール亭おおいし', address: '長野県諏訪市諏訪1丁目9-8', hours: '11:30 - 13:00', linkUrl: 'https://tabelog.com/nagano/A2004/A200404/20015139/', notes: '營業時間 11:30 - 14:00，預計車程 10 分鐘，享受道地鰻魚飯', transportMode: 'car', travelTime: '10' },
+                    { id: 605, category: '景點', title: '溫泉寺 或 高島城跡 (紅葉名勝)', address: '長野県諏訪市', hours: '13:00 - 15:00', notes: '預計車程約 5 分鐘，秋天知名紅葉名勝，視紅葉情況彈性安排參觀', transportMode: 'car', travelTime: '5' },
+                    { id: 606, category: '購物', title: 'TAKEYA味噌會館', address: '2 Chome-3-17 Kogandori, Suwa, Nagano 392-8540日本', hours: '15:00 - 15:30', notes: '營業時間 09:30 - 16:30，各式味噌伴手禮選購，推薦嘗試芝麻味噌霜淇淋', transportMode: 'car', travelTime: '10' },
+                    { id: 607, category: '交通', title: '回到名古屋以及還車', address: 'ニッポンレンタカー 名古屋駅新幹線口営業所', hours: '15:30 - 18:30', notes: '自駕返回名古屋，預計 18:30 抵達，19:00 前完成還車手續', transportMode: 'car', travelTime: '180' },
+                    { id: 608, category: '住宿', title: '入住酒店 Prince Smart Inn Nagoya Sakae', address: '愛知縣名古屋市中區錦3-21-21', hours: '19:00', notes: '榮區飯店辦理 Check-in 入住', transportMode: 'walk', travelTime: '15' },
+                    { id: 609, category: '美食', title: '名古屋榮商圈晚餐', hours: '20:00', notes: '榮商圈自由選食晚餐', transportMode: 'walk', travelTime: '10' }
                 ]
             },
             {
                 weekday: 'Tue', date: '11/10', city: '名古屋',
                 items: [
-                    { id: 701, category: '購物', title: '名古屋榮商圈購物採買', address: '愛知縣名古屋市中區榮', time: '10:00', notes: '伴手禮與藥妝最後補貨', transportMode: 'car', travelTime: '30' },
-                    { id: 702, category: '航班', flightNo: 'CX539', time: '16:15 - 19:50', depCode: 'NGO', depTime: '16:15', arrCode: 'HKG', arrTime: '19:50', flightDuration: '4h 35m', notes: '中部國際機場 ➔ 香港國際機場' }
+                    { id: 701, category: '購物', title: '名古屋榮商圈購物採買', address: '愛知縣名古屋市中區榮', hours: '10:00', notes: '伴手禮與藥妝最後補貨', transportMode: 'car', travelTime: '30' },
+                    { id: 702, category: '航班', flightNo: 'CX539', time: '16:15 - 19:50', hours: '16:15 - 19:50', depCode: 'NGO', depTime: '16:15', arrCode: 'HKG', arrTime: '19:50', flightDuration: '4h 35m', notes: '中部國際機場 ➔ 香港國際機場' }
                 ]
             }
         ];
@@ -743,8 +773,8 @@
                 const isEditing = ref(false);
                 const activeEditItem = ref(null);
 
-                const modalForm = ref({ title: '', category: '景點', address: '', hours: '', travelTime: '20', notes: '' });
-                const modalExpenseForm = ref({ name: '', amount: 0, paidBy: 'Rachel', date: new Date().toISOString().split('T')[0] });
+                const modalForm = ref({ title: '', category: '景點', address: '', linkUrl: '', hours: '', travelTime: 20, notes: '' });
+                const modalExpenseForm = ref({ name: '', category: '餐飲', amount: 0, paidBy: 'Rachel', date: new Date().toISOString().split('T')[0] });
 
                 const itineraryDays = ref(DEFAULT_ITINERARY);
                 const checklistItems = ref([
@@ -760,9 +790,9 @@
                     { id: 2, category: '購物清單', title: '富山白蝦仙貝伴手禮', note: '車站商場購買', done: false }
                 ]);
 
-                // LocalStorage Load
+                // LocalStorage Loading
                 onMounted(() => {
-                    const savedItinerary = localStorage.getItem('japan_trip_itinerary');
+                    const savedItinerary = localStorage.getItem('japan_trip_itinerary_v2');
                     if (savedItinerary) {
                         try { itineraryDays.value = JSON.parse(savedItinerary); } catch (e) {}
                     }
@@ -773,7 +803,7 @@
                 });
 
                 // Auto Save Watchers
-                watch(itineraryDays, (newVal) => localStorage.setItem('japan_trip_itinerary', JSON.stringify(newVal)), { deep: true });
+                watch(itineraryDays, (newVal) => localStorage.setItem('japan_trip_itinerary_v2', JSON.stringify(newVal)), { deep: true });
                 watch(expenses, (newVal) => localStorage.setItem('japan_trip_expenses', JSON.stringify(newVal)), { deep: true });
 
                 const calculatedHKD = computed(() => (jpyInput.value * exchangeRate.value).toFixed(1));
@@ -793,6 +823,7 @@
                     { name: 'APA Hotel Nagoya Ekimae Kita', dates: '11/04 - 11/05', phone: '+81 570-075-611', address: '愛知縣名古屋市中村區則武1-2-4' },
                     { name: 'Hotel Enoe Toyama', dates: '11/05 - 11/07', phone: '+81 76-444-1080', address: '富山縣富山市寶町1-4-1' },
                     { name: '東橫INN松本站前本町', dates: '11/08 - 11/09', phone: '+81 263-36-1045', address: '長野縣松本市中央2-1-23' },
+                    { name: 'Prince Smart Inn Nagoya Sakae', dates: '11/09 - 11/10', phone: '+81 52-211-8205', address: '愛知縣名古屋市中區錦3-21-21' },
                 ]);
 
                 // Sorted Expenses (Date Descending)
@@ -808,16 +839,27 @@
                     const diff = rachelPaid.value - moPaid.value;
                     const halfDiff = Math.abs(diff / 2);
                     const halfDiffHKD = (halfDiff * exchangeRate.value).toFixed(1);
-                    if (diff > 0) return `Mo 需支付給 Rachel ¥${halfDiff.toLocaleString()} (約 HK$ ${halfDiffHKD})`;
-                    if (diff < 0) return `Rachel 需支付給 Mo ¥${halfDiff.toLocaleString()} (約 HK$ ${halfDiffHKD})`;
+                    if (diff > 0) return `Mo 需付給 Rachel ¥${halfDiff.toLocaleString()} (約 HK$ ${halfDiffHKD})`;
+                    if (diff < 0) return `Rachel 需付給 Mo ¥${halfDiff.toLocaleString()} (約 HK$ ${halfDiffHKD})`;
                     return '雙方花費完全平攤！';
                 });
 
-                const getPrevHotelName = (dayIdx) => {
-                    if (dayIdx <= 0) return null;
-                    const prevDay = itineraryDays.value[dayIdx - 1];
-                    const hotelItem = prevDay.items.slice().reverse().find(i => i.category === '住宿');
+                const getPrevHotelName = (dayIndex) => {
+                    if (dayIndex <= 0) return null;
+                    const prevDay = itineraryDays.value[dayIndex - 1];
+                    if (!prevDay || !prevDay.items) return null;
+                    const hotelItem = [...prevDay.items].reverse().find(i => i.category === '住宿');
                     return hotelItem ? hotelItem.title : null;
+                };
+
+                const formatItemTravelTime = (mins) => {
+                    const num = parseInt(mins);
+                    if (!num || isNaN(num) || num <= 0) return '0 分鐘';
+                    const hours = Math.floor(num / 60);
+                    const minutes = num % 60;
+                    if (hours > 0 && minutes > 0) return `${hours} 小時 ${minutes} 分鐘`;
+                    if (hours > 0) return `${hours} 小時`;
+                    return `${minutes} 分鐘`;
                 };
 
                 const getCategoryBadgeStyle = (category) => {
@@ -858,8 +900,8 @@
 
                 const openAddModal = () => {
                     isEditing.value = false;
-                    modalForm.value = { title: '', category: '景點', address: '', hours: '', travelTime: '20', notes: '' };
-                    modalExpenseForm.value = { name: '', amount: 0, paidBy: 'Rachel', date: new Date().toISOString().split('T')[0] };
+                    modalForm.value = { title: '', category: '景點', address: '', linkUrl: '', hours: '', travelTime: 20, notes: '' };
+                    modalExpenseForm.value = { name: '', category: '餐飲', amount: 0, paidBy: 'Rachel', date: new Date().toISOString().split('T')[0] };
                     showModal.value = true;
                 };
 
@@ -884,7 +926,6 @@
                     } else if (currentTab.value === 'expenses') {
                         expenses.value.push({
                             id: Date.now(),
-                            category: '一般消費',
                             paymentMethod: '現金',
                             ...modalExpenseForm.value
                         });
@@ -906,6 +947,8 @@
                 const confirmResetData = () => {
                     itineraryDays.value = JSON.parse(JSON.stringify(DEFAULT_ITINERARY));
                     localStorage.removeItem('japan_trip_itinerary');
+                    localStorage.removeItem('japan_trip_itinerary_v2');
+                    localStorage.removeItem('japan_trip_expenses');
                 };
 
                 const getChecklistByCat = (cat) => checklistItems.value.filter(item => item.category === cat);
@@ -920,7 +963,7 @@
                     exchangeRate, jpyInput, calculatedHKD, hotels, checklistItems,
                     expenses, sortedExpenses, totalExpenseJPY, rachelPaid, moPaid, splitSettlementMessage, shoppingItems,
                     showModal, isEditing, modalForm, modalExpenseForm,
-                    getCategoryBadgeStyle, getTransportIcon, getPrevHotelName, getChecklistByCat, getShoppingByCat,
+                    getCategoryBadgeStyle, getTransportIcon, getPrevHotelName, getChecklistByCat, getShoppingByCat, formatItemTravelTime,
                     cycleTransportMode, moveItem, openAddModal, openEditModal, saveModalData, deleteItineraryItem, deleteExpenseItem,
                     confirmResetData, toggleChecklist, deleteChecklistItem, toggleShopping, deleteShoppingItem
                 };
