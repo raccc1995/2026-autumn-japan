@@ -117,11 +117,11 @@
             <div class="relative z-10 text-white">
                 <div class="flex items-center space-x-2">
                     <span class="text-[10px] font-extrabold tracking-widest bg-ginkgo-300 text-chestnut-900 px-2.5 py-0.5 rounded-full uppercase shadow-md flex items-center gap-1">
-                        <i class="fa-solid fa-leaf text-ginkgo-700"></i> Autumn Japn 2026
+                        <i class="fa-solid fa-leaf text-ginkgo-700"></i> Autumn Gold 2026
                     </span>
                 </div>
                 <h1 class="text-xl font-black tracking-wide mt-2 drop-shadow-md text-white flex items-center">
-                    日本北陸秋季旅行
+                    日本中部．北陸秋旅
                 </h1>
                 <p class="text-xs text-ginkgo-100 opacity-95 mt-1 flex items-center font-medium tracking-wide">
                     <i class="fa-regular fa-calendar-check me-1.5 text-ginkgo-300"></i>11/04 (三) - 11/10 (二)
@@ -298,7 +298,7 @@
                                     </p>
                                     <p v-if="item.notes" class="flex items-start text-chestnut-600">
                                         <i class="fa-regular fa-comment-dots w-4 text-ginkgo-600 mt-0.5 shrink-0"></i>
-                                        <span class="flex-1">{{ item.notes }}</span>
+                                        <span class="flex-1 break-all">{{ item.notes }}</span>
                                     </p>
                                 </div>
                             </div>
@@ -404,13 +404,13 @@
                             <i class="fa-solid fa-car text-ginkgo-600 me-2"></i>租車資訊
                         </h2>
                         <div class="p-3 bg-oat-soft/40 rounded-xl border border-oat-border text-xs space-y-1.5">
-                            <div class="font-extrabold text-chestnut-800">Nippon Rent-a-Car (中部國際機場營業所)</div>
-                            <div class="text-[11px] text-chestnut-600"><i class="fa-regular fa-clock me-1"></i>租期：11/05 08:30 - 11/10 14:00</div>
-                            <div class="text-[11px] text-chestnut-600"><i class="fa-solid fa-phone me-1"></i>+81 569-38-8120</div>
-                            <a href="https://www.google.com/maps/search/?api=1&query=Nippon+Rent-a-Car+Chubu+Centrair+International+Airport" 
+                            <div class="font-extrabold text-chestnut-800">ニッポンレンタカー 名古屋駅新幹線口 営業所</div>
+                            <div class="text-[11px] text-chestnut-600"><i class="fa-regular fa-clock me-1"></i>租期：11/05 09:00 取車 - 11/09 19:00 前還車</div>
+                            <div class="text-[11px] text-chestnut-600"><i class="fa-solid fa-phone me-1"></i>+81 52-452-0919</div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Nippon+Rent-a-Car+Nagoya+Station+Shinkansenguchi" 
                                target="_blank" 
                                class="inline-flex items-center text-ginkgo-700 font-bold text-[11px] hover:underline">
-                                <i class="fa-solid fa-location-dot me-1"></i>愛知縣常滑市Centrair 1-1
+                                <i class="fa-solid fa-location-dot me-1"></i>愛知縣名古屋市中村區椿町14-11
                             </a>
                         </div>
                     </div>
@@ -676,16 +676,23 @@
                 weekday: 'Wed', date: '11/04', city: '名古屋',
                 items: [
                     { id: 101, category: '航班', flightNo: 'CX536', time: '10:15 - 15:00', depCode: 'HKG', depTime: '10:15', arrCode: 'NGO', arrTime: '15:00', flightDuration: '3h 45m', notes: '香港國際機場 ➔ 中部國際機場' },
-                    { id: 102, category: '交通', title: '名鐵特急至名古屋市區', time: '16:00', address: '中部國際機場站', ticket: '¥1,250', notes: '搭乘名鐵特急前往名古屋車站', transportMode: 'train', travelTime: '40' },
-                    { id: 103, category: '住宿', title: 'APA Hotel Nagoya Ekimae Kita', address: '愛知縣名古屋市中村區椿町1-15', hours: 'Check-in 15:00', notes: '飯店理行李入住', transportMode: 'walk', travelTime: '10' }
+                    { id: 102, category: '交通', title: '中部國際機場至名古屋站 (名鐵特急)', hours: '16:00 - 17:00', address: '中部國際機場站', ticket: '¥1,250', notes: '搭乘名鐵特急前往名古屋車站', transportMode: 'train', travelTime: '40' },
+                    { id: 103, category: '住宿', title: 'APA Hotel Nagoya Ekimae Kita (アパホテル 名古屋駅前北)', hours: '17:00 - 18:00', address: '愛知縣名古屋市中村區則武1-2-4', notes: '飯店辦理 Check-in 入住手續', transportMode: 'walk', travelTime: '10' },
+                    { id: 104, category: '美食', title: '世界の山ちゃん 則武店', hours: '18:00 - 19:30', address: '愛知県名古屋市中村区則武1-2-3', notes: '開放時間 17:00 - 23:15，招牌名古屋手羽先（炸雞翅）晚餐', transportMode: 'walk', travelTime: '10' }
                 ]
             },
             {
-                weekday: 'Thu', date: '11/05', city: '高山 / 白川鄉',
+                weekday: 'Thu', date: '11/05', city: '白川鄉 / 富山',
                 items: [
-                    { id: 201, category: '交通', title: '取車出發自駕前往高山', address: '名古屋站前租車據點', time: '08:30', notes: '開始自駕之旅', transportMode: 'car', travelTime: '120' },
-                    { id: 202, category: '景點', title: '飛驒高山老街', address: '岐阜縣高山市上三之町', time: '11:00', ticket: '免費', notes: '品嚐飛驒牛握壽司與漫步傳統街景', transportMode: 'car', travelTime: '50' },
-                    { id: 203, category: '景點', title: '白川鄉合掌村', address: '岐阜縣大野郡白川村', time: '14:30', ticket: '瞭望台巴士 ¥200', notes: '世界文化遺產落葉松秋景', transportMode: 'car', travelTime: '70' }
+                    { id: 201, category: '美食', title: '在酒店食早餐', hours: '08:00 - 09:00', notes: 'APA Hotel 飯店享用早餐', transportMode: 'walk', travelTime: '0' },
+                    { id: 202, category: '交通', title: '前往租車公司取車', address: 'ニッポンレンタカー 名古屋駅新幹線口 営業所', hours: '09:00 - 10:00', notes: '11/05 取車, 11/09 19:00 前還車', transportMode: 'walk', travelTime: '15' },
+                    { id: 203, category: '交通', title: '自駕前往白川鄉', address: '村營SESERAGI公園停車場', hours: '10:00 - 12:00', notes: '導航至村營SESERAGI公園停車場，預計車程約 2 小時 10 分鐘', transportMode: 'car', travelTime: '130' },
+                    { id: 204, category: '美食', title: '白川郷食事処 いろり', address: '岐阜県大野郡白川村荻町374-1', hours: '12:00 - 13:30', notes: '營業時間 10:00 - 14:00 (Tabelog 高評價鄉土料理: https://tabelog.com/gifu/A2104/A210404/21003222/)', transportMode: 'walk', travelTime: '10' },
+                    { id: 205, category: '景點', title: '荻町城跡展望台 & 城山天守閣展望台', address: '岐阜県大野郡白川村荻町', hours: '13:30 - 15:00', notes: '營業時間 09:30 - 15:30。步行約 15 分鐘俯瞰合掌村全景，城山展望台只要購買食物即可入座欣賞白川鄉全景', transportMode: 'walk', travelTime: '15' },
+                    { id: 206, category: '景點', title: '合掌村散步 & 白川鄉布丁的家', address: '岐阜県大野郡白川村荻町702', hours: '15:00 - 17:00', notes: '白川郷ぷりんの家 營業時間 10:00 - 16:30，合掌村內極具人氣的甜點專賣店，夢幻視覺招牌：「水布丁（水ぷりん）」', transportMode: 'walk', travelTime: '10' },
+                    { id: 207, category: '景點', title: '相逢橋', address: '岐阜県大野郡白川村荻町', hours: '17:00 - 17:30', notes: '吊橋橫跨在河床寬廣的庄川上，可從橋上觀賞宜人的河川景色。過橋時能感受到庄川清澈見底的流水舒暢感', transportMode: 'walk', travelTime: '5' },
+                    { id: 208, category: '住宿', title: '前往富山入住 Hotel Enoe Toyama', address: '富山縣富山市寶町1-4-1', hours: '17:30 - 19:00', notes: '預計自駕車程約 1 小時 30 分鐘，辦理 Check-in 入住', transportMode: 'car', travelTime: '90' },
+                    { id: 209, category: '美食', title: '廻転とやま鮨 富山站前店', address: '富山県富山市桜町1-4-9', hours: '19:00', notes: '富山灣新鮮直送迴轉壽司晚餐 (Tabelog: https://tabelog.com/toyama/A1601/A160101/16007185/)', transportMode: 'walk', travelTime: '10' }
                 ]
             },
             {
@@ -746,7 +753,7 @@
                 ]);
                 const expenses = ref([
                     { id: 1, category: '交通', name: 'Nippon Rent-a-Car 租車', amount: 48000, date: '2026-11-04', paymentMethod: '信用卡', paidBy: 'Mo' },
-                    { id: 2, category: '住宿', name: 'APA Hotel 房費', amount: 18500, date: '2026-11-05', paymentMethod: '信用卡', paidBy: 'Rachel' }
+                    { id: 2, category: '住宿', name: 'Hotel Enoe Toyama 房費', amount: 18500, date: '2026-11-05', paymentMethod: '信用卡', paidBy: 'Rachel' }
                 ]);
                 const shoppingItems = ref([
                     { id: 1, category: '必做清單', title: '在上高地河童橋拍秋景照片', note: '早晨陽光最美', done: false },
@@ -775,6 +782,7 @@
                 const weatherData = {
                     '名古屋': { temp: 18, feelsLike: 17, condition: '多雲時晴', icon: 'fa-solid fa-cloud-sun' },
                     '高山 / 白川鄉': { temp: 13, feelsLike: 11, condition: '晴朗', icon: 'fa-solid fa-sun' },
+                    '白川鄉 / 富山': { temp: 14, feelsLike: 12, condition: '晴朗', icon: 'fa-solid fa-sun' },
                     '富山': { temp: 15, feelsLike: 14, condition: '陰天', icon: 'fa-solid fa-cloud' },
                     '上高地 / 松本': { temp: 10, feelsLike: 8, condition: '晴朗', icon: 'fa-solid fa-sun' },
                     '諏訪湖 / 名古屋': { temp: 16, feelsLike: 15, condition: '多雲', icon: 'fa-solid fa-cloud-sun' },
@@ -782,7 +790,7 @@
                 const currentDayWeather = computed(() => weatherData[currentDayData.value.city] || weatherData['名古屋']);
 
                 const hotels = ref([
-                    { name: 'APA Hotel Nagoya Ekimae Kita', dates: '11/04 - 11/05', phone: '+81 52-589-3111', address: '愛知縣名古屋市中村區椿町1-15' },
+                    { name: 'APA Hotel Nagoya Ekimae Kita', dates: '11/04 - 11/05', phone: '+81 570-075-611', address: '愛知縣名古屋市中村區則武1-2-4' },
                     { name: 'Hotel Enoe Toyama', dates: '11/05 - 11/07', phone: '+81 76-444-1080', address: '富山縣富山市寶町1-4-1' },
                     { name: '東橫INN松本站前本町', dates: '11/08 - 11/09', phone: '+81 263-36-1045', address: '長野縣松本市中央2-1-23' },
                 ]);
@@ -885,7 +893,7 @@
                 };
 
                 const deleteItineraryItem = () => {
-                    if (activeEditItem.value && confirm('確定要刪除此行程嗎？')) {
+                    if (activeEditItem.value) {
                         currentDayData.value.items = currentDayData.value.items.filter(i => i.id !== activeEditItem.value.id);
                         showModal.value = false;
                     }
@@ -896,10 +904,8 @@
                 };
 
                 const confirmResetData = () => {
-                    if (confirm('確定要將行程復原為預設資料嗎？')) {
-                        itineraryDays.value = JSON.parse(JSON.stringify(DEFAULT_ITINERARY));
-                        localStorage.removeItem('japan_trip_itinerary');
-                    }
+                    itineraryDays.value = JSON.parse(JSON.stringify(DEFAULT_ITINERARY));
+                    localStorage.removeItem('japan_trip_itinerary');
                 };
 
                 const getChecklistByCat = (cat) => checklistItems.value.filter(item => item.category === cat);
